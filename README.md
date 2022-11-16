@@ -17,3 +17,5 @@ db.create_all()
 ## RUN
 
 To run type `flask run`
+
+To read the tables in the database inside docker: `psql -U db`
