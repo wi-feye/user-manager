@@ -36,7 +36,7 @@ services:
       - user_ms_migrations
 
   user_ms_migrations:
-    <<: *user-manager
+    <<: *user_manager_ms
     command: sh -c "flask db init && flask db migrate && flask db upgrade" 
     env_file:
       - env_file
