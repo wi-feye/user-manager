@@ -22,7 +22,7 @@ def refresh_expiring_jwts(response):
 
 
 # Api registration
-@app.post('/register')
+@app.post('/register/')
 def register():
     email= request.json['email']
     password= request.json['password']
@@ -36,7 +36,7 @@ def register():
 
 
 
-@app.post('/login')
+@app.post('/login/')
 def login():
     email= request.json.get('email', ' ')
     password = request.json.get('password', ' ')
@@ -72,7 +72,7 @@ def pull():
 
 
 #get all users in the database
-@app.get('/all')
+@app.get('/all/')
 def all():
     users= User.query.all()
     allusers=[]
