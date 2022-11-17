@@ -2,7 +2,7 @@ version: "3.6"
 
 services:
 
-  db:
+  user_manager_db:
     image: postgres:latest
     restart: unless-stopped
     volumes:
@@ -13,14 +13,14 @@ services:
     env_file:
       - env_file
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "db"]
+      test: ["CMD", "pg_isready", "-U", "db", "-d", "user_manager_db"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  user-manager:
+  user_manager_ms:
     # Building the image
-    <<: &user-manager
+    <<: &user_manager_ms
       image: "user-manager:latest"
       build:
         context: .
@@ -30,20 +30,20 @@ services:
     env_file: 
       - env_file
     environment:
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=user_manager_db
     depends_on:
-      - db
-      - migrations
+      - user_manager_db
+      - user_ms_migrations
 
-  migrations:
+  user_ms_migrations:
     <<: *user-manager
     command: sh -c "flask db init && flask db migrate && flask db upgrade" 
     env_file:
       - env_file
     environment:
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=user_manager_db
     depends_on:
-      db:
+      user_manager_db:
         condition: service_healthy
 
 volumes:
