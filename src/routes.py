@@ -1,10 +1,10 @@
 from src.models.User import User
 from src.dao.UserManager import UserManager
 from src import app
-from flask import request,jsonify
+from flask import request, jsonify
 from src.constants.http_status_code import *
 from datetime import datetime, timezone, timedelta
-from flask_jwt_extended import create_access_token,get_jwt_identity,get_jwt
+from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt
 
 
 #  It checks after every call to the apis if the token is expiring, in case is expiring it refreshs it
@@ -15,55 +15,63 @@ def refresh_expiring_jwts(response):
         now = datetime.now(timezone.utc)
         target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
         if target_timestamp > exp_timestamp:
-            access = create_access_token(identity=get_jwt_identity()) 
+            access = create_access_token(identity=get_jwt_identity())
         return response
     except (RuntimeError, KeyError):
         return response
 
 
 # Api registration
-@app.post('/register/')
+@app.post("/register/")
 def register():
-    email= request.json['email']
-    password= request.json['password']
-    name= request.json['name']
-    surname= request.json['surname']
-    zerynth_api_key = request.json['zerynth_api_key']
-    idz = request.json['idz']
-   
-    user=User(name=name, password=password, email=email, surname=surname,zerynth_api_key=zerynth_api_key, idz=idz)
+    email = request.json["email"]
+    password = request.json["password"]
+    name = request.json["name"]
+    surname = request.json["surname"]
+    zerynth_api_key = request.json["zerynth_api_key"]
+    idz = request.json["idz"]
+
+    user = User(
+        name=name,
+        password=password,
+        email=email,
+        surname=surname,
+        zerynth_api_key=zerynth_api_key,
+        idz=idz,
+    )
     return UserManager.register(user)
 
 
-
-@app.post('/login/')
+@app.post("/login/")
 def login():
-    email= request.json.get('email', ' ')
-    password = request.json.get('password', ' ')
+    email = request.json.get("email", " ")
+    password = request.json.get("password", " ")
 
-    return UserManager.login(email,password)
+    return UserManager.login(email, password)
 
-           
 
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
 
+
 @app.route("/api/")
 def api():
     return "<p>API Handle</p>"
 
+
 @app.route("/push/")
 def push():
     user = User()
-    user.idz = 'zidprova2'
-    user.zerynth_api_key = 'zerynth_api_key2'
-    user.email = 'prov2a@gmail.com'
-    user.name = 'Dav2ide'
-    user.surname = 'Fi2orini'
-    user.password = 'pro2222va1234567890'
+    user.idz = "zidprova2"
+    user.zerynth_api_key = "zerynth_api_key2"
+    user.email = "prov2a@gmail.com"
+    user.name = "Dav2ide"
+    user.surname = "Fi2orini"
+    user.password = "pro2222va1234567890"
     UserManager.add(user)
     return "<p>Data pushed</p>"
+
 
 @app.route("/pull/")
 def pull():
@@ -71,18 +79,20 @@ def pull():
     return raws
 
 
-#get all users in the database
-@app.get('/all/')
+# get all users in the database
+@app.get("/all/")
 def all():
-    users= User.query.all()
-    allusers=[]
+    users = UserManager.get_all()
+    allusers = []
 
     for user in users:
-        allusers.append({
-            'id': user.id,
-            'password': user.password,
-            'email' :user.email,
-            'name': user.name,
-            'surname': user.name,
-        })
-    return jsonify({'All_users': allusers}), HTTP_200_OK    
+        allusers.append(
+            {
+                "id": user.id,
+                "password": user.password,
+                "email": user.email,
+                "name": user.name,
+                "surname": user.name,
+            }
+        )
+    return jsonify({"All_users": allusers}), HTTP_200_OK

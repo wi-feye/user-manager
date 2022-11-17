@@ -1,6 +1,7 @@
 from src import db
 from src.models.User import User
 
+
 class Manager(object):
 
     db_session = db.session
@@ -9,7 +10,7 @@ class Manager(object):
     def check_none(**kwargs):
         for name, arg in zip(kwargs.keys(), kwargs.values()):
             if arg is None:
-                raise ValueError('You can\'t set %s argument to None' % name)
+                raise ValueError("You can't set %s argument to None" % name)
 
     @staticmethod
     def create(**kwargs):
@@ -24,14 +25,6 @@ class Manager(object):
         return db.session.query(User).all()
 
     @staticmethod
-    def retrieve():
-        """
-        It should implemented by child
-        :return:
-        """
-        pass
-
-    @staticmethod
     def update(**kwargs):
         Manager.check_none(**kwargs)
         db.session.commit()
@@ -44,7 +37,6 @@ class Manager(object):
             db.session.delete(bean)
         db.session.commit()
 
+    @staticmethod
     def get_user_by_email(email):
-       return User.query.filter_by(email=email).first()
-
-  
+        return User.query.filter_by(email=email).first()
