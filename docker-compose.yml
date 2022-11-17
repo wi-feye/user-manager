@@ -1,0 +1,50 @@
+version: "3.6"
+
+services:
+
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - data:/var/lib/postgresql/data
+    ports:
+      # this is only for development purpose
+      - "5343:5343"
+    env_file:
+      - env_file
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  user-manager:
+    # Building the image
+    <<: &user-manager
+      image: "user-manager:latest"
+      build:
+        context: .
+        dockerfile: Dockerfile
+    ports:
+      - "10002:10002"
+    env_file: 
+      - env_file
+    environment:
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+      - migrations
+
+  migrations:
+    <<: *user-manager
+    command: sh -c "flask db init && flask db migrate && flask db upgrade" 
+    env_file:
+      - env_file
+    environment:
+      - POSTGRES_HOST=db
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  data:
