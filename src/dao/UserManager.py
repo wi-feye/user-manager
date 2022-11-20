@@ -18,11 +18,11 @@ class UserManager(Manager):
     def add(user: User):
         Manager.create(user=user)
 
-    @staticmethod
-    def get_all():
-        users = User.query.all()
-        users = [user_dict(user) for user in users]
-        return users
+    # @staticmethod
+    # def get_all():
+    #     users = User.query.all()
+    #     users = [user_dict(user) for user in users]
+    #     return users
 
     @staticmethod
     def register(user):
@@ -88,10 +88,10 @@ class UserManager(Manager):
             HTTP_201_CREATED,
         )
 
-    @staticmethod
+   
     def login(email, password):
         email = email.strip()
-
+        is_pass_correct=False
         user = Manager.get_user_by_email(email)
         if user:
             is_pass_correct = check_password_hash(user.password, password)
@@ -102,6 +102,7 @@ class UserManager(Manager):
             response = jsonify(
                 {
                     "user": {
+                        "id": user.id,
                         "access": access,
                         "name": user.name,
                         "email": user.email,
@@ -115,6 +116,40 @@ class UserManager(Manager):
 
         return jsonify({"message": "Wrong credentials"}), HTTP_401_UNAUTHORIZED
 
+    def get_all():
+        users= Manager.get_all()
+        allusers = []
+        for user in users:
+            allusers.append(
+                {
+                    "id": user.id,
+                    "password": user.password,
+                    "email": user.email,
+                    "name": user.name,
+                    "surname": user.surname,
+                    "idz": user.idz,
+                    "zerynth_api_key": user.zerynth_api_key
+                }
+            )
+        return jsonify({"All_users": allusers}), HTTP_200_OK
+
+    
+    
+    def get_me(id):
+        user = Manager.get_user_by_id(id)
+        if user:
+             return jsonify({
+                "id": user.id,
+                "email": user.email,
+                "name": user.name,
+                "surname": user.name,
+                "idz": user.idz,
+                "zerynth_api_key": user.zerynth_api_key
+        })
+        return jsonify({"message": "User not found"}), HTTP_404_NOT_FOUND
+
+
+
 
 def user_dict(user):
     return {
@@ -126,6 +161,7 @@ def user_dict(user):
         "surname": user.surname,
         "password": user.password,
     }
+  
 
 
 def contains_number(string):

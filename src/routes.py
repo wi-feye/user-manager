@@ -82,17 +82,13 @@ def pull():
 # get all users in the database
 @app.get("/all/")
 def all():
-    users = UserManager.get_all()
-    allusers = []
+    return UserManager.get_all()
 
-    for user in users:
-        allusers.append(
-            {
-                "id": user.id,
-                "password": user.password,
-                "email": user.email,
-                "name": user.name,
-                "surname": user.name,
-            }
-        )
-    return jsonify({"All_users": allusers}), HTTP_200_OK
+
+# get data of the user
+@app.get("/user")
+def get_info_user():
+    id= request.args.get('id', type = int)
+    if id:
+        return UserManager.get_me(id)
+    return jsonify({"message":"id not received"}), HTTP_400_BAD_REQUEST           

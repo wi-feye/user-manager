@@ -39,4 +39,9 @@ class Manager(object):
 
     @staticmethod
     def get_user_by_email(email):
-        return User.query.filter_by(email=email).first()
+        return db.session.query(User).filter_by(email=email).first()
+
+    @staticmethod
+    def get_user_by_id(id):
+        return db.session.query(User).filter_by(id=id).first()    
+        
