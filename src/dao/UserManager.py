@@ -56,11 +56,20 @@ class UserManager(Manager):
                 HTTP_400_BAD_REQUEST,
             )
 
+            
+
         # TODO get idz from zerinth
         # TODO check if zerynth_api_key for real exists in zerynth cloude
 
         if Manager.get_user_by_email(email) is not None:
             return jsonify({"error": "Email already exists"}), HTTP_409_CONFLICT
+
+        if Manager.get_user_by_idz(user.idz) is not None:
+            return jsonify({"error": "Id zerynth already exists"}), HTTP_409_CONFLICT
+
+        if Manager.get_user_by_idz(user.zerynth_api_key) is not None:
+            return jsonify({"error": "zeryntH api key already exists"}), HTTP_409_CONFLICT           
+
 
         pwd_hash = generate_password_hash(password)
 
@@ -79,9 +88,10 @@ class UserManager(Manager):
                 {
                     "message": "User created successfully",
                     "user": {
+                        "id":user.id,
                         "name": user.name,
                         "surname": user.surname,
-                        "email": user.email,
+                        "email": user.email
                     },
                 }
             ),
@@ -142,7 +152,7 @@ class UserManager(Manager):
                 "id": user.id,
                 "email": user.email,
                 "name": user.name,
-                "surname": user.name,
+                "surname": user.surname,
                 "idz": user.idz,
                 "zerynth_api_key": user.zerynth_api_key
         })

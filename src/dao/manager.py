@@ -43,5 +43,19 @@ class Manager(object):
 
     @staticmethod
     def get_user_by_id(id):
-        return db.session.query(User).filter_by(id=id).first()    
+        return db.session.query(User).filter_by(id=id).first()
+
+    @staticmethod
+    def get_user_by_idz(idz):
+        return db.session.query(User).filter_by(idz=idz).first()      
+
+    @staticmethod
+    def get_user_by_idz(idz):
+        return db.session.query(User).filter_by(idz=idz).first()      
+
+    @staticmethod
+    def get_user_by_zerynth_api_key(zerynth_api_key):
+        return db.session.query(User).filter_by(zerynth_api_key=zerynth_api_key).first()         
+
+
         

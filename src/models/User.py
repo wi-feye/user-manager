@@ -19,7 +19,7 @@ class User(db.Model):
     # All fields of user
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     idz = db.Column(db.String(20), unique=True,nullable=False)
-    zerynth_api_key = db.Column(db.String)
+    zerynth_api_key = db.Column(db.String(), unique=True)
     email = db.Column(db.Unicode(128), unique=True, nullable=False)
     name = db.Column(db.Unicode(128), nullable=False)
     surname = db.Column(db.Unicode(128), nullable=False)
