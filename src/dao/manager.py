@@ -23,7 +23,7 @@ class Manager(object):
     @staticmethod
     def get_all():
         return db.session.query(User).all()
-
+        
     @staticmethod
     def update(**kwargs):
         Manager.check_none(**kwargs)
@@ -44,18 +44,20 @@ class Manager(object):
     @staticmethod
     def get_user_by_id(id):
         return db.session.query(User).filter_by(id=id).first()
+    
 
     @staticmethod
-    def get_user_by_idz(idz):
-        return db.session.query(User).filter_by(idz=idz).first()      
+    def get_user_by_id_zerynth(id_zerynth):
+        return db.session.query(User).filter_by(id_zerynth=id_zerynth).first()      
 
     @staticmethod
-    def get_user_by_idz(idz):
-        return db.session.query(User).filter_by(idz=idz).first()      
+    def get_user_by_apikey_zerynth(apikey_zerynth):
+        return db.session.query(User).filter_by(apikey_zerynth=apikey_zerynth).first()    
 
-    @staticmethod
-    def get_user_by_zerynth_api_key(zerynth_api_key):
-        return db.session.query(User).filter_by(zerynth_api_key=zerynth_api_key).first()         
+    def delete_all_user():
+        db.session.query(User).delete()      
+        db.session.commit()  
+  
 
 
         

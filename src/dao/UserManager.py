@@ -12,17 +12,11 @@ from flask_jwt_extended import (
     set_access_cookies,
 )
 
-
 class UserManager(Manager):
+
     @staticmethod
     def add(user: User):
         Manager.create(user=user)
-
-    # @staticmethod
-    # def get_all():
-    #     users = User.query.all()
-    #     users = [user_dict(user) for user in users]
-    #     return users
 
     @staticmethod
     def register(user):
@@ -56,20 +50,14 @@ class UserManager(Manager):
                 HTTP_400_BAD_REQUEST,
             )
 
-            
-
-        # TODO get idz from zerinth
-        # TODO check if zerynth_api_key for real exists in zerynth cloude
-
         if Manager.get_user_by_email(email) is not None:
             return jsonify({"error": "Email already exists"}), HTTP_409_CONFLICT
 
-        if Manager.get_user_by_idz(user.idz) is not None:
+        if Manager.get_user_by_id_zerynth(user.id_zerynth) is not None:
             return jsonify({"error": "Id zerynth already exists"}), HTTP_409_CONFLICT
 
-        if Manager.get_user_by_idz(user.zerynth_api_key) is not None:
-            return jsonify({"error": "zeryntH api key already exists"}), HTTP_409_CONFLICT           
-
+        if Manager.get_user_by_apikey_zerynth(user.apikey_zerynth) is not None:
+            return jsonify({"error": "apikey zerynth already exists"}), HTTP_409_CONFLICT           
 
         pwd_hash = generate_password_hash(password)
 
@@ -78,8 +66,8 @@ class UserManager(Manager):
             password=pwd_hash,
             email=email,
             surname=surname,
-            zerynth_api_key=user.zerynth_api_key,
-            idz=user.idz,
+            apikey_zerynth=user.apikey_zerynth,
+            id_zerynth=user.id_zerynth,
         )
         UserManager.add(user)
 
@@ -91,14 +79,15 @@ class UserManager(Manager):
                         "id":user.id,
                         "name": user.name,
                         "surname": user.surname,
-                        "email": user.email
+                        "email": user.email,
+                        "id_zerynth": user.id_zerynth,
+                        "apikey_zerynth": user.apikey_zerynth
                     },
                 }
             ),
             HTTP_201_CREATED,
         )
 
-   
     def login(email, password):
         email = email.strip()
         is_pass_correct=False
@@ -117,7 +106,8 @@ class UserManager(Manager):
                         "name": user.name,
                         "email": user.email,
                         "surname": user.surname,
-                        "zerynth_api_key": user.zerynth_api_key,
+                        "id_zerynth": user.id_zerynth,
+                        "apikey_zerynth": user.apikey_zerynth
                     }
                 }
             )
@@ -133,18 +123,15 @@ class UserManager(Manager):
             allusers.append(
                 {
                     "id": user.id,
-                    "password": user.password,
                     "email": user.email,
                     "name": user.name,
                     "surname": user.surname,
-                    "idz": user.idz,
-                    "zerynth_api_key": user.zerynth_api_key
+                    "id_zerynth": user.id_zerynth,
+                    "apikey_zerynth": user.apikey_zerynth
                 }
             )
-        return jsonify({"All_users": allusers}), HTTP_200_OK
+        return jsonify(allusers), HTTP_200_OK
 
-    
-    
     def get_me(id):
         user = Manager.get_user_by_id(id)
         if user:
@@ -153,25 +140,22 @@ class UserManager(Manager):
                 "email": user.email,
                 "name": user.name,
                 "surname": user.surname,
-                "idz": user.idz,
-                "zerynth_api_key": user.zerynth_api_key
+                "id_zerynth": user.id_zerynth,
+                "apikey_zerynth": user.apikey_zerynth
         })
         return jsonify({"message": "User not found"}), HTTP_404_NOT_FOUND
-
-
 
 
 def user_dict(user):
     return {
         "id": user.id,
-        "idz": user.idz,
-        "zerynth_api_key": user.zerynth_api_key,
+        "id_zerynth": user.id_zerynth,
+        "apikey_zerynth": user.apikey_zerynth,
         "email": user.email,
         "name": user.name,
         "surname": user.surname,
         "password": user.password,
     }
-  
 
 
 def contains_number(string):

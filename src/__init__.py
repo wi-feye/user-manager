@@ -45,5 +45,14 @@ def create_app():
     app.app_context().push()
     db.create_all()
 
+
+    from src.init_static_db import init_user
+    from src.dao.UserManager import UserManager
+    from src.dao.manager import Manager
+    
+    # Manager.delete_all_user()
+    if Manager.get_all()==[]:
+        init_user()
+
     return app
     

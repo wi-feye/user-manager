@@ -28,16 +28,16 @@ def register():
     password = request.json["password"]
     name = request.json["name"]
     surname = request.json["surname"]
-    zerynth_api_key = request.json["zerynth_api_key"]
-    idz = request.json["idz"]
+    apikey_zerynth = request.json["apikey_zerynth"]
+    id_zerynth = request.json["id_zerynth"]
 
     user = User(
         name=name,
         password=password,
         email=email,
         surname=surname,
-        zerynth_api_key=zerynth_api_key,
-        idz=idz,
+        apikey_zerynth=apikey_zerynth,
+        id_zerynth=id_zerynth,
     )
     return UserManager.register(user)
 
@@ -46,49 +46,17 @@ def register():
 def login():
     email = request.json.get("email", " ")
     password = request.json.get("password", " ")
-
     return UserManager.login(email, password)
-
-
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
-
-
-@app.route("/api/")
-def api():
-    return "<p>API Handle</p>"
-
-
-@app.route("/push/")
-def push():
-    user = User()
-    user.idz = "zidprova2"
-    user.zerynth_api_key = "zerynth_api_key2"
-    user.email = "prov2a@gmail.com"
-    user.name = "Dav2ide"
-    user.surname = "Fi2orini"
-    user.password = "pro2222va1234567890"
-    UserManager.add(user)
-    return "<p>Data pushed</p>"
-
-
-@app.route("/pull/")
-def pull():
-    raws = UserManager.get_all()
-    return raws
-
 
 # get all users in the database
 @app.get("/users/")
 def all():
     return UserManager.get_all()
 
-
 # get data of the user
 @app.get("/user")
 def get_info_user():
     id= request.args.get('id', type = int)
     if id:
-        return UserManager.get_me(id)
+        return UserManager.get_me(id), HTTP_200_OK
     return jsonify({"message":"id not received"}), HTTP_400_BAD_REQUEST           
