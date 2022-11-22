@@ -80,7 +80,7 @@ def pull():
 
 
 # get all users in the database
-@app.get("/all/")
+@app.get("/users/")
 def all():
     return UserManager.get_all()
 
