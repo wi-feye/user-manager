@@ -12,7 +12,7 @@ class User(db.Model):
     __tablename__ = 'User'
 
     # A list of fields to be serialized
-    SERIALIZE_LIST = ['id', 'id_zerynth', 'apikey_zerynth' 'email', 'name', 'surname', 'password']
+    SERIALIZE_LIST = ['id', 'id_zerynth', 'apikey_zerynth' 'email', 'name', 'surname', 'password', 'telegram_username']
 
     # All fields of user
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -22,6 +22,7 @@ class User(db.Model):
     name = db.Column(db.Unicode(128), nullable=False)
     surname = db.Column(db.Unicode(128), nullable=False)
     password = db.Column(db.Unicode(128), nullable=False)
+    telegram_username = db.Column(db.String(32), nullable=True)
 
     def __init__(self, *args, **kw):
         super(User, self).__init__(*args, **kw)

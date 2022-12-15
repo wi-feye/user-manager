@@ -11,5 +11,6 @@ def init_user():
         password="gustavo1",
         apikey_zerynth="G9froN8D4R.cF1znVzGvCejjc5BrzCsSqcqMaANPgRmFXMglCAWhkYttQFTymThnrf1ta7OQVP4",
         id_zerynth="acc-6sdna7wlhpno",
-    )  
+        telegram_username="domyf" #TODO: aggiungi telegram username
+    )
     UserManager.register(user)
