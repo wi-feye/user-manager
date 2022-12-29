@@ -5,6 +5,7 @@ from flask import request, jsonify
 from src.constants.http_status_code import *
 from datetime import datetime, timezone, timedelta
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt
+import requests
 
 
 #  It checks after every call to the apis if the token is expiring, in case is expiring it refreshs it
@@ -20,6 +21,8 @@ def refresh_expiring_jwts(response):
     except (RuntimeError, KeyError):
         return response
 
+def get_zerynth_prrofile_by_apikey(apikey):
+    return requests.get("https://api.login.zerynth.com/v1/auth/profile", headers={"X-API-KEY": apikey})
 
 # Api registration
 @app.post("/register/")
@@ -29,7 +32,13 @@ def register():
     name = request.json["name"]
     surname = request.json["surname"]
     apikey_zerynth = request.json["apikey_zerynth"]
-    id_zerynth = request.json["id_zerynth"]
+    zprofile_res = get_zerynth_prrofile_by_apikey(apikey_zerynth)
+    if not zprofile_res.ok:
+        return (
+                jsonify({"error": "the api key is not correct"}),
+                zprofile_res.status_code,
+            )
+    id_zerynth = zprofile_res.json()["uid"]
 
     user = User(
         name=name,
