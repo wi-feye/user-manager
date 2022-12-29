@@ -53,8 +53,8 @@ def register():
 
 @app.post("/login/")
 def login():
-    email = request.json.get("email", " ")
-    password = request.json.get("password", " ")
+    email = request.json["email"]
+    password = request.json["password"]
     return UserManager.login(email, password)
 
 # get all users in the database
